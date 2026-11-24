@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#101a35">
+<title>Рабочий стол</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+:root{--white:#f8fbff;--muted:rgba(242,247,255,.68);--glass:rgba(12,22,42,.58);--line:rgba(255,255,255,.16)}
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;overflow:hidden;font-family:Inter,"Segoe UI",Arial,sans-serif;user-select:none}
+body{background:#0b1730;color:var(--white)}
+button{font:inherit}
+.desktop{position:relative;width:100%;height:100%;min-height:100svh;overflow:hidden;background:
+ radial-gradient(ellipse at 78% 25%,rgba(173, 157, 204, 0.78),transparent 32%),
+ radial-gradient(ellipse at 15% 90%,rgba(198,174,255,.55),transparent 40%),
+ linear-gradient(135deg,#8b77b3 0%,#dcd0ff 48%,#c8c9f6 100%)}
+.wallpaper-glow{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.wallpaper-glow:before,.wallpaper-glow:after{content:"";position:absolute;border-radius:50%;filter:blur(2px)}
+.wallpaper-glow:before{width:54vw;height:54vw;right:-8vw;top:-20vw;border:1px solid rgba(126,195,255,.2);box-shadow:0 0 0 28px rgba(126,195,255,.035),0 0 0 75px rgba(126,195,255,.025),inset 0 0 90px rgba(70,154,255,.12)}
+.wallpaper-glow:after{width:42vw;height:42vw;left:-20vw;bottom:-27vw;background:rgba(120,89,255,.11);filter:blur(55px)}
+.desktop-noise{position:absolute;inset:0;opacity:.14;pointer-events:none;background-image:radial-gradient(rgba(255,255,255,.6) .55px,transparent .55px);background-size:5px 5px;mask-image:linear-gradient(135deg,black,transparent 75%)}
+.topbar{position:absolute;z-index:2;top:0;left:0;right:0;height:42px;display:flex;align-items:center;justify-content:space-between;padding:0 22px;color:rgba(53,48,83,.78);font-size:11px;letter-spacing:.2px;background:linear-gradient(180deg,rgba(4,12,26,.24),transparent)}
+.top-left,.top-right{display:flex;align-items:center;gap:15px}
+.top-brand{display:flex;align-items:center;gap:8px;font-weight:700;color:#4c406e}
+.winmark{width:13px;height:13px;display:grid;grid-template-columns:1fr 1fr;grid-template-rows:1fr 1fr;gap:2px;transform:skewY(-7deg)}
+.winmark i{background:#c3b6ec}
+.top-status{display:flex;align-items:center;gap:6px}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#70e2a0;box-shadow:0 0 9px #70e2a0}
+.desktop-icons{position:absolute;z-index:3;top:76px;left:25px}
+.file-icon{width:112px;min-height:108px;padding:10px 7px;display:flex;align-items:center;flex-direction:column;gap:9px;border:1px solid transparent;border-radius:10px;color:#42395f;text-shadow:0 1px 2px rgba(255,255,255,.85);font-size:12px;line-height:1.35;text-align:center;cursor:pointer;transition:background .18s,border .18s,transform .18s}
+.file-icon:hover,.file-icon:focus{background:rgba(255,255,255,.42);border-color:rgba(115,96,164,.22);outline:none;transform:translateY(-2px)}
+.file-icon:active{transform:scale(.97)}
+.file-art{width:54px;height:58px;filter:drop-shadow(0 8px 8px rgba(0,0,0,.28));transition:transform .25s}
+.file-icon:hover .file-art{transform:rotate(-4deg) translateY(-3px)}
+.file-name{max-width:105px;overflow-wrap:anywhere}
+.desktop-note{position:absolute;z-index:2;right:35px;top:92px;width:min(290px,35vw);padding:15px 17px;border:1px solid rgba(255,255,255,.1);border-radius:15px;background:rgba(255,255,255,.34);backdrop-filter:blur(14px);box-shadow:0 12px 40px rgba(91,73,145,.10)}
+.note-label{font-size:9px;letter-spacing:1.7px;text-transform:uppercase;color:#355377;margin-bottom:8px}
+.desktop-note p{font-size:11px;line-height:1.65;color:rgba(73, 63, 121, 0.76);margin:0}
+.dock-wrap{position:absolute;z-index:6;left:50%;bottom:17px;transform:translateX(-50%);max-width:calc(100vw - 24px)}
+.dock{display:flex;align-items:center;gap:9px;padding:9px 13px;border:1px solid rgba(255,255,255,.18);border-radius:21px;background:rgba(255,255,255,.66);backdrop-filter:blur(26px) saturate(145%);box-shadow:0 15px 45px rgba(83,66,130,.18),inset 0 1px rgba(255,255,255,.8)}
+.dock-app{position:relative;flex:0 0 48px;width:48px;height:48px;display:grid;place-items:center;border:1px solid rgba(255,255,255,.12);border-radius:14px;background:rgba(128,105,185,.09);cursor:pointer;transition:transform .2s cubic-bezier(.2,.8,.2,1),background .2s,box-shadow .2s}
+.dock-app:hover{transform:translateY(-9px) scale(1.08);background:rgba(153,128,213,.18);box-shadow:0 10px 20px rgba(83,66,130,.16)}
+.dock-app svg{width:27px;height:27px;display:block}
+.dock-app .tooltip{position:absolute;bottom:59px;left:50%;transform:translate(-50%,5px);opacity:0;pointer-events:none;white-space:nowrap;padding:6px 9px;border-radius:7px;background:rgba(55,43,82,.94);border:1px solid rgba(255,255,255,.2);font-size:10px;color:#fff;transition:.18s}
+.dock-app:hover .tooltip{opacity:1;transform:translate(-50%,0)}
+.dock-app:after{content:"";position:absolute;bottom:-6px;width:4px;height:4px;border-radius:50%;background:rgba(255,255,255,.65)}
+.dock-separator{flex:0 0 1px;width:1px;height:31px;background:rgba(92,75,133,.22);margin:0 2px}
+.system-tray{position:absolute;z-index:5;right:22px;bottom:26px;display:flex;align-items:center;gap:13px;color:rgba(53,48,83,.83);font-size:10px}
+.tray-icons{display:flex;align-items:center;gap:8px;font-size:13px}
+.clock{text-align:right;line-height:1.55}
+.fullscreen{position:absolute;z-index:8;right:18px;top:53px;padding:8px 11px;border:1px solid rgba(115,96,164,.18);border-radius:9px;background:rgba(255,255,255,.4);backdrop-filter:blur(12px);color:rgba(65,54,99,.85);font-size:10px;cursor:pointer;transition:.2s}
+.fullscreen:hover{background:rgba(255,255,255,.12);color:rgb(144, 139, 219)}
+.bsod{position:fixed;z-index:20;inset:0;display:none;align-items:center;justify-content:center;padding:8vw;background:#0878d1;color:#fff}
+.bsod.show{display:flex;animation:blueIn .35s ease-out}
+.bsod-inner{width:min(760px,100%);margin:auto}
+.sad{font-size:clamp(70px,10vw,112px);font-weight:300;line-height:1;margin-bottom:26px;animation:sadBob 1.7s ease-in-out infinite}
+.bsod h1{font-size:clamp(19px,2.8vw,29px);font-weight:400;line-height:1.4;margin:0 0 25px;max-width:710px}
+.percent{font-size:clamp(19px,2.5vw,25px);margin-bottom:23px}
+.progress{width:min(390px,100%);height:4px;background:rgba(255,255,255,.25);overflow:hidden;border-radius:9px}
+.progress span{display:block;height:100%;width:0;background:#fff;animation:load 4.7s linear forwards}
+.bsod-small{font-size:12px;opacity:.8;margin-top:24px;line-height:1.7}
+.congrats{position:fixed;z-index:30;inset:0;display:none;align-items:center;justify-content:center;padding:24px;overflow:hidden;background:radial-gradient(ellipse at 50% 42%,#ffd9ed 0%,#f7b8d9 28%,#e98fbe 57%,#b95d99 100%);color:#632c53}
+.congrats.show{display:flex;animation:pinkReveal .9s cubic-bezier(.2,.8,.2,1) both}
+.congrats:before{content:"";position:absolute;inset:0;opacity:.38;background:radial-gradient(circle at 15% 20%,#fff 0 1px,transparent 2px),radial-gradient(circle at 80% 25%,#fff 0 1.5px,transparent 2.5px),radial-gradient(circle at 28% 78%,#fff 0 1px,transparent 2px),radial-gradient(circle at 72% 84%,#fff 0 1px,transparent 2px);background-size:170px 160px,230px 210px,190px 180px,240px 230px;animation:twinkle 3s ease-in-out infinite alternate}
+.pink-glow{position:absolute;width:70vmin;height:70vmin;border-radius:50%;background:rgba(255,255,255,.28);filter:blur(65px);animation:glowPulse 4s ease-in-out infinite}
+.heart-rain{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.floating-heart{position:absolute;bottom:-70px;color:rgba(255,255,255,.78);text-shadow:0 5px 16px rgba(171,63,127,.18);animation:floatHeart var(--duration,8s) linear var(--delay,0s) infinite;left:var(--left,50%);font-size:var(--size,24px);opacity:0}
+.card{position:relative;z-index:2;width:min(640px,100%);padding:clamp(30px,6vw,62px);border:1px solid rgba(255,255,255,.72);border-radius:30px;background:rgba(255,248,253,.72);backdrop-filter:blur(22px);box-shadow:0 28px 90px rgba(123,43,94,.22),inset 0 1px 0 #fff;text-align:center;animation:cardPop .85s cubic-bezier(.18,.9,.25,1.2) both}
+.card:before{content:"";position:absolute;inset:8px;border:1px solid rgba(210,115,166,.18);border-radius:23px;pointer-events:none}
+.card-top{font-size:12px;letter-spacing:3px;text-transform:uppercase;color:#b45d91;font-weight:700}
+.big-heart{display:inline-block;margin:17px 0 7px;font-size:58px;filter:drop-shadow(0 9px 12px rgba(199,76,141,.2));animation:heartBeat 1.35s ease-in-out infinite}
+.card h2{font-size:clamp(34px,7vw,60px);line-height:1.05;letter-spacing:-2px;margin:5px 0 18px;color:#9e4679}
+.card p{font-size:clamp(14px,2.4vw,17px);line-height:1.75;color:#82516f;margin:0 auto 28px;max-width:470px}
+.card-footer{font-size:11px;letter-spacing:1px;color:#bd7ca1;margin-top:18px}
+.ascii-frame{margin:0 auto 24px;padding:13px 12px 10px;width:min(100%,340px);border:1px solid rgba(196,119,164,.24);border-radius:17px;background:rgba(255,255,255,.48);box-shadow:inset 0 1px 0 rgba(255,255,255,.9),0 8px 24px rgba(167,90,137,.08)}
+.ascii-frame figcaption{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:#b46d98;margin-bottom:9px}
+.ascii-frame pre{margin:0;color:#9b5c83;font:600 10px/1.12 ui-monospace,SFMono-Regular,Consolas,monospace;white-space:pre;overflow-x:auto;max-width:100%;text-align:center}
+
+.again{position:relative;border:0;border-radius:999px;padding:14px 25px;background:linear-gradient(135deg,#d85c9d,#b74386);color:#fff;font-weight:700;font-size:13px;cursor:pointer;box-shadow:0 9px 22px rgba(177,61,126,.27);transition:transform .2s,box-shadow .2s}
+.again:hover{transform:translateY(-3px);box-shadow:0 14px 28px rgba(177,61,126,.35)}
+.again:active{transform:scale(.97)}
+@keyframes load{to{width:100%}}@keyframes blueIn{from{opacity:0}to{opacity:1}}
+@keyframes sadBob{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+@keyframes pinkReveal{from{opacity:0;filter:blur(8px)}to{opacity:1;filter:blur(0)}}
+@keyframes cardPop{0%{opacity:0;transform:translateY(28px) scale(.94)}100%{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes heartBeat{0%,100%{transform:scale(1)}12%{transform:scale(1.13)}24%{transform:scale(1)}36%{transform:scale(1.08)}}
+@keyframes floatHeart{0%{transform:translate3d(0,0,0) rotate(-12deg) scale(.7);opacity:0}12%{opacity:.8}80%{opacity:.7}100%{transform:translate3d(var(--drift,30px),-115vh,0) rotate(28deg) scale(1.25);opacity:0}}
+@keyframes twinkle{from{opacity:.2}to{opacity:.65}}
+@keyframes glowPulse{0%,100%{transform:scale(.9);opacity:.55}50%{transform:scale(1.1);opacity:.9}}
+@media(max-width:700px){.desktop-note{display:none}.desktop-icons{top:65px;left:10px}.file-icon{width:100px}.dock-wrap{bottom:12px}.dock{gap:6px;padding:8px 9px;border-radius:17px}.dock-app{flex-basis:42px;width:42px;height:43px;border-radius:12px}.dock-app svg{width:24px;height:24px}.system-tray{display:none}.fullscreen{top:47px;right:12px}.topbar{padding:0 13px}.bsod{padding:28px}.card{padding:34px 24px}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<main class="desktop" id="desktop">
+  <div class="wallpaper-glow"></div><div class="desktop-noise"></div>
+  <header class="topbar">
+    <div class="top-left"><div class="top-brand"><span class="winmark"><i></i><i></i><i></i><i></i></span> Windows</div><span>Рабочий стол</span></div>
+    <div class="top-right"><span class="top-status"><i class="status-dot"></i> Система в порядке</span><span>Личный компьютер</span></div>
+  </header>
+
+  <div class="desktop-icons">
+    <div class="file-icon" title="Открыть файл" role="button" tabindex="0" id="suspiciousFile" aria-label="Открыть файл НЕ_СМОТРИ_СЮДА.exe">
+      <svg class="file-art" viewBox="0 0 58 64" aria-hidden="true">
+        <defs><linearGradient id="paper" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#fff"/><stop offset="1" stop-color="#cbdcf2"/></linearGradient></defs>
+        <path d="M10 3h25l14 14v40a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4z" fill="url(#paper)" stroke="#9fb9d9"/>
+        <path d="M35 3v14h14" fill="#a9c5e7"/><path d="M15 29h25M15 35h25M15 41h18" stroke="#8ca8cb" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="39" cy="49" r="10" fill="#ed647b"/><path d="M39 43v7m0 3v.5" stroke="#fff" stroke-width="2.3" stroke-linecap="round"/>
+      </svg>
+      <span class="file-name">ann.exe</span>
+    </div>
+  </div>
+
+  <aside class="desktop-note">
+    <div class="note-label">✦ небольшое напоминание</div>
+    <p>Рабочий стол чистый. Подозрительных файлов нет. Вообще никаких. Особенно одного конкретного.</p>
+  </aside>
+
+  <button class="fullscreen" id="fullscreenBtn">⛶ На весь экран</button>
+
+  <div class="dock-wrap">
+    <nav class="dock" aria-label="Закреплённые приложения">
+      <button class="dock-app" title="Spotify" aria-label="Spotify">
+        <span class="tooltip">Spotify</span>
+        <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#1ed760"/><path d="M7.5 12.2c5.9-1.8 12.7-.9 17.1 1.8M9 16.2c4.9-1.4 10.6-.6 14.2 1.6M10.4 20c3.9-1.1 8.4-.5 11.3 1.2" fill="none" stroke="#092b18" stroke-width="2.1" stroke-linecap="round"/></svg>
+      </button>
+      <button class="dock-app" title="Steam" aria-label="Steam">
+        <span class="tooltip">Steam</span>
+        <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="15" fill="#e8f1ff"/><circle cx="20.5" cy="10.5" r="5.1" fill="#182b45"/><circle cx="20.5" cy="10.5" r="3.2" fill="none" stroke="#d7e8fa" stroke-width="1.5"/><circle cx="10.2" cy="20.5" r="4.1" fill="#182b45"/><circle cx="10.2" cy="20.5" r="2.2" fill="#e8f1ff"/><path d="M13.4 18.3l4.1-5.1 2.2 1.7-4.4 5.3" fill="none" stroke="#182b45" stroke-width="3" stroke-linecap="round"/></svg>
+      </button>
+      <button class="dock-app" title="Minecraft" aria-label="Minecraft">
+        <span class="tooltip">Minecraft</span>
+        <svg viewBox="0 0 32 32"><path fill="#65a943" d="M4 8l12-5 12 5v16l-12 5-12-5z"/><path fill="#8bca5e" d="M4 8l12 5 12-5-12-5z"/><path fill="#4b8738" d="M16 13v16L4 24V8z"/><path fill="#a6d978" d="M16 13l12-5v16l-12 5z"/><path d="M10 16h3v3h-3zm9 0h3v3h-3zm-4 5h3v3h-3z" fill="#283a2a"/></svg>
+      </button>
+      <button class="dock-app" title="Discord" aria-label="Discord">
+        <span class="tooltip">Discord</span>
+        <svg viewBox="0 0 32 32"><rect x="2" y="3" width="28" height="26" rx="9" fill="#5865f2"/><path d="M10 10.2c4-2 8-2 12 0 1.5 2.2 2.4 5 2.7 8-2.2 2-4.3 2.8-6.2 3.1l-.8-1.4c1-.3 1.8-.7 2.5-1.2-2.7 1.2-5.4 1.2-8.1 0 .7.5 1.5.9 2.5 1.2l-.8 1.4c-1.9-.3-4-1.1-6.2-3.1.3-3 1.2-5.8 2.4-8z" fill="#fff"/><circle cx="12.5" cy="16" r="1.4" fill="#5865f2"/><circle cx="19.5" cy="16" r="1.4" fill="#5865f2"/></svg>
+      </button>
+      <span class="dock-separator"></span>
+      <button class="dock-app" title="Проводник" aria-label="Проводник">
+        <span class="tooltip">Проводник</span>
+        <svg viewBox="0 0 32 32"><path d="M3 8a3 3 0 0 1 3-3h8l3 3h9a3 3 0 0 1 3 3v2H3z" fill="#f6c84b"/><path d="M3 12h26v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z" fill="#ffd96a"/><path d="M4 14h24" stroke="#fff0a8" stroke-width="2"/></svg>
+      </button>
+      <button class="dock-app" title="Настройки" aria-label="Настройки">
+        <span class="tooltip">Настройки</span>
+        <svg viewBox="0 0 32 32"><circle cx="16" cy="16" r="12" fill="#9eb1c9"/><circle cx="16" cy="16" r="5" fill="#263b58"/><g stroke="#9eb1c9" stroke-width="4" stroke-linecap="round"><path d="M16 2v4M16 26v4M2 16h4M26 16h4M6 6l3 3M23 23l3 3M26 6l-3 3M9 23l-3 3"/></g></svg>
+      </button>
+    </nav>
+  </div>
+  <div class="system-tray"><div class="tray-icons"><span>⌃</span><span>◖</span><span>◉</span></div><div class="clock"><span id="clock">12:00</span><br><span id="date">24.11.2026</span></div></div>
+</main>
+
+<section class="bsod" id="bsod" aria-live="assertive">
+  <div class="bsod-inner">
+    <div class="sad">:(</div>
+    <h1>На вашем устройстве возникла проблема, и его необходимо перезагрузить.</h1>
+    <div class="percent"><span id="percent">0</span>% завершено</div>
+    <div class="progress"><span></span></div>
+    <div class="bsod-small">Код остановки: JUST_KIDDING<br>Не выключайте компьютер. Сюрприз уже почти готов…</div>
+  </div>
+</section>
+
+<section class="congrats" id="congrats">
+  <div class="pink-glow"></div>
+  <div class="heart-rain" id="heartRain"></div>
+  <div class="card">
+    <div class="card-top">✧ система успешно восстановлена ✧</div>
+    <div class="big-heart">💗</div>
+    <h2>А ПОПАЛАСЬ! ИИХИХХИХИХИ ♡</h2>
+    <p>Поздравляю тебя с днем рождения! Тебе уже 17!?!?!? АБАЛДЕТЬ💕 Желаю тебе чтобы все что ты хотела получалось и конечно чтобы ты поскорее выздоровела. Ничего не сломалось, все файлы на месте. Просто хотелось подарить тебе немного неожиданности и много-много улыбок.</p>
+    <button class="again" id="againBtn">Обнять систему ещё раз ♡</button>
+    <div class="card-footer">made with ♥ just for you</div>
+  </div>
+</section>
+
+<script>
+const file = document.getElementById('suspiciousFile');
+const desktop = document.getElementById('desktop');
+const bsod = document.getElementById('bsod');
+const congrats = document.getElementById('congrats');
+const percent = document.getElementById('percent');
+let running = false, timers = [];
+
+function clearTimers(){timers.forEach(clearTimeout);timers=[]}
+function launchPrank(){
+  if(running)return;
+  running=true;clearTimers();
+  desktop.style.display='none';
+  congrats.classList.remove('show');
+  bsod.classList.add('show');
+  const start=Date.now(),duration=4700;
+  function tick(){
+    const n=Math.min(100,Math.floor((Date.now()-start)/duration*100));
+    percent.textContent=n;
+    if(n<100)timers.push(setTimeout(tick,45));
+  }
+  tick();
+  // Синий экран держится дольше, чтобы розовое поздравление было неожиданным.
+  timers.push(setTimeout(()=>{
+    bsod.classList.remove('show');
+    congrats.classList.add('show');
+    makeHearts();
+    running=false;
+  },5200));
+}
+file.addEventListener('dblclick',launchPrank);
+file.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();launchPrank();}});
+function makeHearts(){
+  const rain=document.getElementById('heartRain');
+  rain.innerHTML='';
+  const symbols=['♥','♡','❤','💗','✦'];
+  for(let i=0;i<27;i++){
+    const h=document.createElement('span');
+    h.className='floating-heart';
+    h.textContent=symbols[i%symbols.length];
+    h.style.setProperty('--left',(Math.random()*100)+'%');
+    h.style.setProperty('--size',(14+Math.random()*27)+'px');
+    h.style.setProperty('--duration',(6+Math.random()*7)+'s');
+    h.style.setProperty('--delay',(-Math.random()*10)+'s');
+    h.style.setProperty('--drift',(-55+Math.random()*110)+'px');
+    rain.appendChild(h);
+  }
+}
+document.getElementById('againBtn').addEventListener('click',()=>{
+  clearTimers();congrats.classList.remove('show');bsod.classList.remove('show');
+  desktop.style.display='block';percent.textContent='0';running=false;
+});
+document.getElementById('fullscreenBtn').addEventListener('click',async()=>{
+  try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen();}
+  catch(e){alert('Полноэкранный режим недоступен. Попробуй клавишу F11.');}
+});
+function updateClock(){
+  const d=new Date();
+  document.getElementById('clock').textContent=d.toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+  document.getElementById('date').textContent=d.toLocaleDateString('ru-RU');
+}
+updateClock();setInterval(updateClock,15000);
+</script>
+</body>
+</html>
